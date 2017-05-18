@@ -333,6 +333,7 @@ draw_signal(PageBands *pg, int xx, int yy, int sx, int sy, int tsx) {
 	 }
       }
    no_more_data:
+   ;
    }
 }
 
