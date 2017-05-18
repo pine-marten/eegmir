@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# Using "./mk -a" rebuilds all ignoring date-stamps
+# Using "./mk -d [-a]" builds with debugging
+
+TMP=tmp-linux
+OPT="-O6 -s -c -DT_LINUX"
+[ ! -d $TMP ] && { mkdir $TMP || exit 1; }
+
+[ "$1" = "-d" ] && {
+    OPT="-g -c -Wall -DDEBUG_ON -DT_LINUX"
+    shift
+}
+
+[ "$1" = "-a" ] && {
+    rm -f $TMP/*.o
+    shift
+}
+
+JPP="../jim_pp"
+if [ ! -f $JPP ] || [ common/jim_pp.c -nt $JPP ]
+then
+    echo === jim_pp
+    gcc -O6 -s common/jim_pp.c -o $JPP || 
+    { echo "jim_pp build failed"; exit 1; }
+fi
+
+SDLLIB="$(sdl-config --libs)"
+OBJ=""
+
+for xx in \
+  audio.c \
+  clock.c \
+  colours.c \
+  complex.c \
+  config.c \
+  device.c \
+  main.c \
+  page_audio.c \
+  page_bands.c \
+  page_console.c \
+  page_timing.c \
+  settings.c \
+  oe_server.c \
+  oe_client.c \
+  fidlib/fidlib.c \
+  common/fonts.c \
+  common/graphics.c \
+  common/page.c \
+  common/scratch.c \
+  common/strstream.c \
+  common/time.c \
+  common/utf8.c \
+  common/util.c 
+do
+    obj=${xx%.c}
+    obj=$obj.o
+    obj=${obj#fidlib/}
+    obj=${obj#common/}
+    tmpc=$TMP/${obj%.o}.c
+    [ "$tmpc" = "$xx" ] && { echo "Internal error in TMP setup"; exit 1; }
+    if [ ! -f $TMP/$obj ] || [ $xx -nt $TMP/$obj ]
+    then
+	echo === $xx
+	case "$xx" in
+	  fidlib/*)
+	    gcc $OPT $xx || { echo "FAILED"; exit 1; }
+	    ;;
+	  *)
+	    $JPP <$xx >$tmpc || { echo FAILED; exit 1; }
+	    gcc $OPT -DNO_ALL_H -include all.h $tmpc || { echo "FAILED"; exit 1; }
+	    ;;
+	esac
+        mv $obj $TMP || { echo "Output $obj missing"; exit 1; }
+    fi
+    OBJ="$OBJ $TMP/$obj"
+done
+
+echo "=== linking"
+gcc $OBJ -lSDL -lm $SDLLIB -o ../eegmir || { echo "FAILED"; exit 1; }
+

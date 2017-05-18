@@ -1,0 +1,4 @@
+#!/bin/bash
+
+proto -ev *.c common/*.c | grep -v con_ |
+perl -n -e '/^extern\s+struct\s+\w+\s*;\s*$/ || print;' >proto.h

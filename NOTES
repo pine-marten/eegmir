@@ -1,0 +1,213 @@
+Requirements:
+
+- Avoid XMAS tree effect
+
+- Rewards based on bands such as low beta (12-15) and delta (3-8)
+
+- May need to go down to 0.2Hz for polarity swing stuff (LATER)
+
+- Reward thresholds based on one band or maybe spanning two bands
+
+- Look at old openeeg list for references to reward threshold stuff
+
+- Tone on/off and tone modulation as feedback, both on==good and on==bad
+
+- Maybe need complex combinations of thresholds for feedback, but use
+  custom code for now.
+
+- Butterflies and sun/cloud idea (see E-mail)
+
+---
+
+One possible approach to filtering:
+
+- Use Bessel filters (or similar), with width set according to a
+  window-width parameter
+
+- For each band, put a Bessel filter at each end, and then fill in the
+  rest of the range with equally spaced Bessel filters.
+
+- Thinking of using a 3rd order Bessel filter.  4th gives better
+  performance in the response, closer to a Blackman window, but I'm
+  not sure we need that precision for this application, and 3rd order
+  buys 20% quicker feedback than 4th (and 4th 20% better than
+  Blackman).  Blackman and 4th order are equivalent for response
+  outside of the passband.  3rd order gives roughly 10x bigger
+  response in the stop-band.  Maybe better to use 4th order.
+
+Need to work out expressions to calculate the width of the frequency
+response of any given 4th order Bessel, and also for calculating the
+time-response length.
+
+  wwid   Window-width in wave-periods
+  freq	 Centre frequency of band
+  tlen	 Length of time-response
+  fwid	 Width of response at -3dB level
+
+We will need to go: 
+
+ (freq-fwid == 
+
+
+---
+
+Minimal design
+--------------
+
+Have a text spec-file which is used to setup the whole thing.
+
+- Thread for reading modEEG
+- Thread for front-end
+
+
+[F3]
+BESSEL;
+FPS 10;
+WINDOW 6;
+BAR rrggbb;
+RANGE 8-10;
+BAR rrggbb;
+RANGE 8-10;
+
+# This is a timing display.  It shows all the individual sample
+# recording times, along with sync errors.  It also shows the measured
+# sampling rate compared to the theoretical one.
+[F4] 
+TIMING;		
+
+
+---
+
+BWView-style 3D display wrapped around a can
+
+Top octave  		o1: 1
+Number of octaves  	n5: 5
+Channel			c1: 1
+Signal gain		s5: 5
+Vertical pixel size	v4: 4
+Time-base (samp/pix)	t1: 1
+Brightness		b4: 16
+Window-width		w6: 4.0
+Display mode		m1: 1
+
+
+---
+
+Record/play code:
+
+- Takes over a small bar on the screen and shows current status
+(recording/playing).  Also allows replaying once a recording is
+complete.
+
+---
+
+Two ways of handling serial input:
+
+- Have a separate serial thread waiting for data
+
+- Poll the serial device everytime the audio callback is called, on
+the basis that the audio thread is likely to have been given higher
+priority within SDL.
+
+---
+
+Settings for direct audio feedback:
+
+- Feedback setup number s
+- First channel c
+- Number of channels n
+- Volume level v
+- Delay d
+
+
+---
+
+Thought from Moritz for feedback method.  Do a lissajous figure with
+the brainwave on one axis and a target frequency on the other.  The
+idea is to make the pattern as big as possible.  Could show two or
+more of these, for all the different input channels.
+
+Could even have stack of different figures with different target
+frequencies.
+
+---
+
+For reward channels, I want to create a simple language that operates
+on doubles.  Input data is scaled to -1 to +1 and put in variables
+i0,i1,...
+
+xx= 	assignment
+xx+yy	addition
+xx-yy	subtraction
+xx*yy	multiplication
+xx/yy	division
+-xx	negation
+()	grouping
+max(xx,yy,zz,...)	maximum out of list
+min(xx,yy,zz,...)	minimum out of list
+mean(xx,yy,zz,...)	mean of list
+filter(xx, def)		filter according to definition
+dcfilt(xx, freq, def)	filter with complex-AM shift to DC and complex-mod
+range(xx, r0, r1)	maps the range r0->r1 to 0 to 1 (r1<r0 is possible, out of
+			 range gives nearest extreme)
+threshold(xx, r0, r1)	locking trigger 0/1 output
+
+---
+
+Thinking of generalising all this into functions and so on:
+
+- A function consists of a list of assignment expressions working on
+global variables.  There are no local variables, arguments or return
+values.
+
+- Each function has associated with it a size of static storage that
+it requires for every call-point.  This is used for the filters.  In
+this it will include the static storage for the functions it in turn
+calls, and so on.
+
+- Each function also reports the number of times it must be called
+from reset before good data is coming out (related to the filter
+lengths).
+
+You can do the following things with a function:
+
+- Execute it for a given chunk of memory (static area)
+
+- Reset it (resetting all filters, i.e. static area)
+
+---
+
+Problems due to the fact that different routines will be called in
+different threads:
+
+- One routine is called every time a sample is received, to calculate
+the reward channels
+
+- Another may be called during audio-output generation with data that
+is 50-100ms late.
+
+- Another may be called on particular screens to handle filtering for
+those particular displays.  These would also have to be fed historical
+data to get up to speed when the display is changed.
+
+The big problem is globals.  I think the solution is to have only
+read-only globals.  The only globals available are:
+
+- The user parameters
+
+- The reward channel outputs
+
+The reward routine will be called with the current input samples as
+arguments, and its return value will become the new current reward
+channel outputs (read-only globals).
+
+The audio-generation-related routine will only be called with args and
+return values.
+
+The particular screen handling feeds data @@@@@@@@
+
+
+
+
+
+

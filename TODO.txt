@@ -1,0 +1,49 @@
+To get this whole thing working at a basic level, need to do:
+
+- Get parsing call incorporated into fidlib
+- Get auto-adjust working for dual frequencies
+- Setup structure based on F1 screen for help and log, + additional screens
+- Write code to read a setup file and setup all the different screens
+- Write mind-mirror screen to load up a list of filters and display them
+- Setup recording thread to record serial data into big circular buffer, high priority
+- Setup front-end thread that does analysis and front-end updates
+- Setup audio thread to generate and output audio data as required
+^^DONE^^
+
+- Setup dumping thread to record this data to disk (with compression?)
+
+
+---
+
+Maybe list
+----------
+
+Lissajous figures with brain versus target frequency
+
+
+Ongoing TODO 
+------------
+
+Add a BESSEL page using bessel-based BWView-style filters as the basis
+  of the analysis.
+
+Fix the error handling throughout the whole app (error() in threads
+  pause forever, error in main thread longjmps to main loop?)
+
+MAYBE: Add 'colours' option to 'bands' section for user customisation.
+
+Let config file run as a #! script on UNIX
+
+BUG: core dump on resizing bands display too small
+
+Save data in a non-compressed format; later look at compressed formats
+  when we have some sample recordings to experiment with
+
+Set up "reward channels", and code to respond to those channels either
+  with displays (growing/shrinking coloured squares?) or audible cues
+
+Audio page to permit several different audio feedbacks to be selected
+  (and silence), plus altering of parameters of each one
+
+Add several new direct feedback options (hb2/3/4?)
+

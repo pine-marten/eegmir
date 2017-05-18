@@ -1,0 +1,65 @@
+#!/bin/sh
+
+# Cross-compile from Linux to Win32 using mingw32 cross-compiler as
+# provided by Debian.  This is rather hard-coded to my setup, I'm
+# afraid.
+
+TMP=tmp-win
+COPT="-O6 -s"
+OPT="$COPT -c -DT_MINGW -Dmain=SDL_main -I /home/jim/win/msys/1.0/mingw/include"
+GCC=i586-mingw32msvc-gcc
+JPP="../jim_pp"
+
+[ ! -d $TMP ] && { mkdir $TMP || exit 1; }
+
+OBJ=""
+for xx in \
+  audio.c \
+  clock.c \
+  colours.c \
+  complex.c \
+  config.c \
+  device.c \
+  main.c \
+  page_audio.c \
+  page_bands.c \
+  page_console.c \
+  page_timing.c \
+  settings.c \
+  oe_server.c \
+  oe_client.c \
+  fidlib/fidlib.c \
+  common/fonts.c \
+  common/graphics.c \
+  common/page.c \
+  common/scratch.c \
+  common/strstream.c \
+  common/time.c \
+  common/utf8.c \
+  common/util.c 
+do
+    obj=${xx%.c}
+    obj=${obj%.cxx}
+    obj=$obj.o
+    obj=${obj#common/}
+    obj=${obj#fidlib/}
+    tmpc=$TMP/${obj%.o}.c
+    [ "$tmpc" = "$xx" ] && { echo "Internal error with TMP setup"; exit 1; }
+    echo "=== $xx"
+    case "$xx" in
+     fidlib/*)
+	$GCC $OPT -Dvsnprintf=_vsnprintf $xx || { echo "FAILED"; exit 1; }
+	;;
+     *)
+	$JPP <$xx >$tmpc || { echo FAILED; exit 1; }
+	$GCC $OPT -DNO_ALL_H -include all.h $tmpc || { echo "FAILED"; exit 1; }
+	;;
+    esac
+    mv $obj $TMP || { echo "Output $obj missing"; exit 1; }
+    OBJ="$OBJ $TMP/$obj"
+done
+
+echo "=== linking"
+$GCC $COPT common/main_redir.c $OBJ -L/home/jim/win/msys/1.0/mingw/lib \
+    -lmingw32 -lSDLmain -lSDL -lwsock32 -lm -o ../eegmir.exe || 
+{ echo "FAILED"; exit 1; }

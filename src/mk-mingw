@@ -1,0 +1,44 @@
+#!/bin/sh
+
+OPT="-O6 -s -c"
+
+OPT="$OPT -DT_MINGW -Dmain=SDL_main -I /msys/1.0/mingw/include/SDL"
+
+OBJ=""
+for xx in \
+  colours.c \
+  complex.c \
+  config.c \
+  device.c \
+  main.c \
+  page_bands.c \
+  page_console.c \
+  fidlib/fidlib.c \
+  common/fonts.c \
+  common/graphics.c \
+  common/page.c \
+  common/scratch.c \
+  common/strstream.c \
+  common/time.c \
+  common/utf8.c \
+  common/util.c 
+do
+    obj=${xx%.c}
+    obj=${obj%.cxx}
+    obj=$obj.o
+    obj=${obj#common/}
+    obj=${obj#fidlib/}
+    echo "=== $xx"
+    case "$xx" in
+     fidlib/*)
+	gcc $OPT -Dvsnprintf=_vsnprintf $xx || { echo "FAILED"; exit 1; }
+	;;
+     *)
+	gcc $OPT -include all.h $xx || { echo "FAILED"; exit 1; }
+	;;
+    esac
+    OBJ="$OBJ $obj"
+done
+
+gcc common/main_redir.c $OBJ -lmingw32 -lSDLmain -lSDL -lm -o ../eegmir || 
+{ echo "FAILED"; exit 1; }

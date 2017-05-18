@@ -1,0 +1,13 @@
+To build on Linux, go to the src directory and type:
+
+  ./mk -a
+
+This should result in an executable in the parent directory.  You need
+SDL installed, but that is about it.  
+
+This is a rough prototype release, and that is why there are not more
+instructions for now.
+
+
+
+

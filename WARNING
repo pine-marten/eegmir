@@ -1,0 +1,120 @@
+IMPORTANT WARNING
+-----------------
+
+If you choose to use the OpenEEG project hardware and/or software to
+do neurofeedback training or experimentation on yourself or others,
+you do so ENTIRELY AT YOUR OWN RISK.
+
+The software and hardware designs are distributed in the hope that
+they will be useful, but WITHOUT ANY WARRANTY; without even the
+implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.
+
+Whilst our aim is to create a genuinely useful and safe set of tools
+for neurofeedback training and experimentation, it is quite possible
+that our software, hardware or its accompanying documentation contain
+bugs or mistakes which its authors cannot be held responsible for.
+
+Please bear in mind that we are a loosely knit group of experimenters
+and enthusiasts from all over the world, and many of us have no formal
+training or qualifications in the field of neurofeedback.  It is up to
+you to assess the risks you are taking by using our work.
+
+Neurofeedback training in itself can also cause unpleasant
+side-effects for a small number of people, or in certain unusual
+circumstances.  In an attempt to provide information to allow you to
+better judge the risks to yourself, we are listing here the ones we
+are aware of.  Remember, though, we are not experts, and you should
+research the subject yourself if you want to be sure:
+
+- Electrocution.  If there is an isolation failure in the EEG unit
+  (for example through faulty construction), and the EEG subject
+  touches a live mains voltage in their environment (for example,
+  touching an appliance (e.g. kettle or fridge) where the earthing has
+  failed and there is a short-circuit of live voltage to the casing),
+  then the mains voltage will take the shortest route to earth.
+
+  This means passing up the arm, to the head, through the electrodes,
+  through the isolation failure in the EEG unit, to the PC and then to
+  earth.  This electric shock passing through the head is likely to
+  have severe consequences.  It is important to take care when
+  building the EEG unit to make sure that the isolation is not
+  compromised, in order to protect from this eventuality (however
+  unlikely it may seem).
+
+  There is another possibile route for electrocution -- if the PC
+  earthing fails, and there is also a short of live mains electricity
+  to the PC casing, and if the EEG unit isolation fails, and then the
+  user touches a correctly earthed appliance in the environment with
+  exposed metalwork (e.g. a fridge or sink unit), a shock will again
+  pass through the head.
+
+- Anxiety attacks.  (This was mentioned as a possibility, but we have
+  no detailed info on this)
+
+- Stimulation of latent seizure activity to full seizure activity.
+  (This was also mentioned as a possibility, but we have no detailed
+  info on this)
+
+If you are aware of any other unpleasant side-effects of using EEG
+equipment or doing neurofeedback training, please let us know through
+our mailing list, and we will update this WARNING file.  See
+http://openeeg.sf.net/ for details of our mailing list.
+
+------------------------------------------------------------------------
+
+The ModularEEG hardware design also comes with the following
+disclaimer:
+
+  Disclaimer for the ModularEEG design and all related files:
+
+  The ModularEEG device is presented as an engineering example of some
+  design techniques used in digitizing brainwave signals.
+
+  The device is not IEC601-1 certified, nor is it medically approved.
+  Therefore, connecting it via electrodes to humans or animals is
+  potentially hazardous and may result in electric shock.
+
+  No medical claims are made for this device, and it should not be used
+  for medical diagnostic purposes.
+  
+  The authors do not guarantee that the data provided in the above
+  mentioned files is complete or appropriate for any particular
+  application.
+
+------------------------------------------------------------------------
+
+A list member also provided the following warning that might be useful
+to people in the USA who plan to use the OpenEEG hardware and/or
+software with other people:
+
+  Working on one's self is one thing, but when a person uses it for
+  others, there may be state laws that you can run afoul of.  For
+  example, in some states there are title laws, meaning one can
+  clinically practice anything one wants, but cannot call oneself a
+  title which is protected by law, e.g. psychologist.
+
+  Some states have practice laws which prohibit individuals from
+  actually doing the activity.  Thus to the extent that NFB training
+  can change personality (and it can) one is practicing psychotherapy.
+
+  In the state I live in, that is statutory controlled activity,
+  irrespective of what one calls oneself.  Probably if you and your
+  friends do it to each other, no one will bother you as long as no one
+  gets harmed and there is no basis for a lawsuit.
+
+  If however, you accept money for it, then it could be construed as
+  practice or even if no money is taken and you do things to structure
+  it so that there is a patient-doctor relationship, there could be
+  liability.
+
+  Again, someone would have to claim a harm.  Or, even a practitioner
+  in the community, if he or she knows you are doing it for free, can
+  complain to the licensing board and have you shut down as engaging
+  in unauthorized practice.
+
+  In short, if you accept money for it and/or do it to or with someone
+  other than yourself, it is a thin line requiring the lens of an
+  expert.
+
+------------------------------------------------------------------------
